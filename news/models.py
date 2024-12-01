@@ -8,15 +8,12 @@ class Author(models.Model):
     ratingAuthor = models.SmallIntegerField(default=0)
 
     def update_rating(self):
-        # Получаем суммарный рейтинг всех постов автора
         postRat = self.post_set.aggregate(postRating=Sum('rating'))
         pRat = postRat.get('postRating') or 0
 
-        # Получаем суммарный рейтинг всех комментариев автора
         commentRat = self.authorUser.comment_set.aggregate(commentRating=Sum('rating'))
         cRat = commentRat.get('commentRating') or 0
 
-        # Обновляем общий рейтинг автора
         self.ratingAuthor = pRat * 3 + cRat
         self.save()
 
@@ -53,7 +50,6 @@ class Post(models.Model):
         self.save()
 
     def preview(self):
-        # Исправлено обращение к отсутствующему полю
         return f'{self.title[:123]} ... Рейтинг: {self.rating}'
 
 
