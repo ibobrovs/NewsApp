@@ -1,12 +1,15 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
 
-<!-- Название у нас будет Product -->
 {% block title %}
 Article
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-<h1>{{ article }}</h1>
+
+<h1>{{ new.title }}</h1>
+<p>Date: {{ new.dateCreation|date:'d.m.Y' }}</p>
+<p>Author: {{ new.author.authorUser.username }}</p>
+<p>Category: {{ new.get_categoryType_display }}</p>
+<p>{{ new.text }}</p>
+
 {% endblock content %}

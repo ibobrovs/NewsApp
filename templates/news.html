@@ -1,13 +1,28 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
+{% load cens_filter %}
 
-<!-- Название у нас будет products -->
+
 {% block title %}
 News
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим все товары -->
 {% block content %}
 <h1>All news</h1>
-{{ products }}
+<h3>{{ time_now|date:'M d Y' }}</h3>
+
+
+<p>Total news:{{ news|length }}</p>
+
+<ul>
+    {% for new in news %}
+    <li>
+        <strong>{{ new.title|censor}}</strong> - {{ new.dateCreation|date:"d.m.Y" }}
+        <p>{{ new.text|truncatewords:20 }}</p>
+        <a href="/news/{{ new.id }}">Read more</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<!--<h3> {{ next_sale|default_if_none:"Чуть позже сообщим о распродаже!" }} </h3>-->
+
 {% endblock content %}
