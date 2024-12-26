@@ -17,8 +17,10 @@ News
     <li>
         <strong>{{ new.title|censor}}</strong> - {{ new.dateCreation|date:"d.m.Y" }}
         <p>{{ new.text|truncatewords:20 }}</p>
-        <a href="/news/{{ new.id }}">Read more</a>
-        <a href="{% url 'news_delete' id=new.id %}">Удалить</a>
+        <a href="/news/{{ post.id }}">Read more</a>
+        <a href="{% url 'news_delete' id=post.id %}">Удалить</a>
+        <a href="{% url 'news_edit' id=post.id %}">Редактировать</a>
+
     </li>
     {% endfor %}
 </ul>

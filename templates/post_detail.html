@@ -1,13 +1,12 @@
 {% extends 'flatpages/default.html' %}
 {% block title %}
-{{new.title}}
+{{post.title}}
 {% endblock title %}
 
 {% block content %}
-<h1>{{ new.title }}</h1>
-<p>Published on: {{ new}}</p>
-<p>Published on: {{ new.dateCreation|date:'d.m.Y' }}</p>
+<h1>{{ post.title }}</h1>
+<p>Published on: {{ post.dateCreation|date:'d.m.Y' }}</p>
 <div>
-    <p> {{new.text}}</p>
+    <p> {{post.text}}</p>
 </div>
 {% endblock content %}
