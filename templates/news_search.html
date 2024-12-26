@@ -1,0 +1,19 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+  <h2>Поиск новостей</h2>
+  <form method="get">
+      {{ filterset.form.as_p }}
+      <button type="submit">Поиск</button>
+  </form>
+
+  <h3>Результаты поиска:</h3>
+  <ul>
+      {% for post in search_results %}
+          <li>
+              <a href="{% url 'news_detail' post.id %}">{{ post.title }}</a> - {{ post.dateCreation }}
+          </li>
+      {% empty %}
+          <p>Нет новостей, соответствующих критериям поиска.</p>
+      {% endfor %}
+  </ul>
+{% endblock %}

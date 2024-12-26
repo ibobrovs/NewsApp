@@ -1,7 +1,6 @@
 {% extends 'flatpages/default.html' %}
 {% load cens_filter %}
 
-
 {% block title %}
 News
 {% endblock title %}
@@ -19,6 +18,7 @@ News
         <strong>{{ new.title|censor}}</strong> - {{ new.dateCreation|date:"d.m.Y" }}
         <p>{{ new.text|truncatewords:20 }}</p>
         <a href="/news/{{ new.id }}">Read more</a>
+        <a href="{% url 'news_delete' id=new.id %}">Удалить</a>
     </li>
     {% endfor %}
 </ul>
