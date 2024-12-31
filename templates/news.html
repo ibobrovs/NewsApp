@@ -9,22 +9,28 @@ News
 <h1>All news</h1>
 <h3>{{ time_now|date:'M d Y' }}</h3>
 
-
-<p>Total news:{{ news|length }}</p>
+<p>Total news: {{ news|length }}</p>
 
 <ul>
     {% for new in news %}
     <li>
-        <strong>{{ new.title|censor}}</strong> - {{ new.dateCreation|date:"d.m.Y" }}
+        <strong>{{ new.title|censor }}</strong> - {{ new.dateCreation|date:"d.m.Y" }}
         <p>{{ new.text|truncatewords:20 }}</p>
-        <a href="/news/{{ new.id }}">Read more</a>
-        <a href="{% url 'news_delete' id=new.id %}">Удалить</a>
-        <a href="{% url 'news_edit' id=new.id %}">Редактировать</a>
+        <a href="`{% url 'news_detail' id=new.id %}`">Read more</a>
 
+        {% if perms.news.delete_news %}
+        <a href="{% url 'news_delete' id=new.id %}">Удалить</a>
+        {% endif %}
+
+        {% if perms.news.change_news %}
+        <a href="{% url 'news_edit' id=new.id %}">Редактировать</a>
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
 
-<!--<h3> {{ next_sale|default_if_none:"Чуть позже сообщим о распродаже!" }} </h3>-->
+{% if not news %}
+<h2>Нет новостей!</h2>
+{% endif %}
 
 {% endblock content %}

@@ -36,8 +36,8 @@ class Post(models.Model):
     NEWS = 'NW'
     ARTICLE = 'AR'
     POST_TYPES = [
-        ('news', 'Новость'),
-        ('article', 'Статья'),
+        ('NEWS', 'Новость'),
+        ('ARTICLE', 'Статья'),
     ]
     categoryType = models.CharField(max_length=7, choices=POST_TYPES, default=ARTICLE)
     dateCreation = models.DateTimeField(auto_now_add=True)
