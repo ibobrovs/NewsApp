@@ -7,6 +7,14 @@ from .models import Post
 from .filters import PostFilter
 from .forms import PostForm
 
+from django.contrib.auth.decorators import login_required
+from django.db.models import Exists, OuterRef
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+from .models import Subscription, Category
+
+
+
 
 class PostDetail(DetailView):
     model = Post
@@ -23,7 +31,7 @@ class NewsCreate(CreateView, PermissionRequiredMixin):
 
     def form_valid(self, form):
         news = form.save(commit=False)
-        news.post_type = 'news'
+        news.categoryType = 'NEWS'
         return super().form_valid(form)
 
 
@@ -35,9 +43,8 @@ class ArticleCreate(CreateView, PermissionRequiredMixin):
 
     def form_valid(self, form):
         article = form.save(commit=False)
-        article.post_type = 'article'
+        article.categoryType = 'ARTICLE'
         return super().form_valid(form)
-
 
 class PostUpdate(UpdateView):
     form_class = PostForm
@@ -86,3 +93,32 @@ class PostSearch(FilteredListViewMixin, ListView):
     filter_class = PostFilter
 
 
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(
+                user=request.user,
+                category=category,
+            ).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(
+        user_subscribed=Exists(
+            Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name')
+    return render(
+        request,
+        'subscriptions.html',
+        {'categories': categories_with_subscriptions},
+    )
