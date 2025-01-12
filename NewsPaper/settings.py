@@ -172,3 +172,5 @@ MANAGERS = (
 ADMINS = (
     ('anton', 'anton@yandex.ru'),
 )
+
+CELERY_BROKER_URL = 'redis://:31c2EEP31kTqgO2aSRPY8Bt6LVfrVIRH@redis-10163.c8.us-east-1-4.ec2.redns.redis-cloud.com:10163/0'
