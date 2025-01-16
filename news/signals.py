@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .models import Post
+from board.tasks import send_notification_to_subscribers
 
 
 @receiver(post_save, sender=Post)
@@ -30,3 +31,9 @@ def product_created(instance, created, **kwargs):
         msg = EmailMultiAlternatives(subject, text_content, None, [email])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
+
+
+@receiver(post_save, sender=Post)
+def send_news_notification(sender, instance, created, **kwargs):
+    if created:
+        send_notification_to_subscribers.delay(instance.id)

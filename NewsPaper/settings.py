@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.yandex',
     'django_apscheduler',
+    'board',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
