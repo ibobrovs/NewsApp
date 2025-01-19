@@ -13,7 +13,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from .models import Subscription, Category
 
-
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 
 class PostDetail(DetailView):
@@ -21,6 +22,14 @@ class PostDetail(DetailView):
     template_name = 'post_detail.html'
     context_object_name = 'post'
     pk_url_kwarg = 'id'
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["id"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["id"]}', obj)
+        return obj
 
 
 class NewsCreate(CreateView, PermissionRequiredMixin):
@@ -46,6 +55,7 @@ class ArticleCreate(CreateView, PermissionRequiredMixin):
         article.categoryType = 'ARTICLE'
         return super().form_valid(form)
 
+
 class PostUpdate(UpdateView):
     form_class = PostForm
     model = Post
@@ -58,6 +68,7 @@ class PostDelete(DeleteView):
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
     pk_url_kwarg = 'id'
+
 
 class FilteredListViewMixin:
     filter_class = None
@@ -122,3 +133,8 @@ def subscriptions(request):
         'subscriptions.html',
         {'categories': categories_with_subscriptions},
     )
+
+
+@cache_page(60 * 15)
+def my_view(request):
+    ...
