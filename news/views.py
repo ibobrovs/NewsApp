@@ -15,6 +15,9 @@ from .models import Subscription, Category
 
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
+from django.views import View
+from django.http import HttpResponse
+from django.utils.translation import gettext as _
 
 
 class PostDetail(DetailView):
@@ -134,6 +137,12 @@ def subscriptions(request):
         {'categories': categories_with_subscriptions},
     )
 
+
+class Index(View):
+    def get(self, request):
+        string = _('Hello world')
+
+        return HttpResponse(string)
 
 @cache_page(60 * 15)
 def my_view(request):

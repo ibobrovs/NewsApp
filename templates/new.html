@@ -4,11 +4,12 @@ Article
 {% endblock title %}
 
 {% block content %}
-
+{% trans
 <h1>{{ new.title }}</h1>
 <p>Date: {{ new.dateCreation|date:'d.m.Y' }}</p>
 <p>Author: {{ new.author.authorUser.username }}</p>
 <p>Category: {{ new.get_categoryType_display }}</p>
 <p>{{ new.text }}</p>
+%}!
 
 {% endblock content %}

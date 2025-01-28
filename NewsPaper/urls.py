@@ -4,6 +4,7 @@ from news.views import Post, PostDetail, NewsCreate, ArticleCreate, PostUpdate, 
 from django.views.decorators.cache import cache_page
 
 urlpatterns = [
+   path('i18n/', include('django.conf.urls.i18n')),
    path('admin/', admin.site.urls),
    path('news/', include('news.urls')),
    path("accounts/", include("allauth.urls")),
