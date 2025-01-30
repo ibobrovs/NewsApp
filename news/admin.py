@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Post, Author, Category, PostCategory, Comment
+from .models import Post, Author, Category, PostCategory, Comment, MyModel
+from modeltranslation.admin import TranslationAdmin
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -27,3 +28,10 @@ class PostCategoryAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('commentPost', 'commentUser', 'text', 'dateCreation', 'rating')
     list_filter = ('dateCreation', 'rating')
+
+
+class MyModelAdmin(TranslationAdmin):
+    model = MyModel
+
+
+admin.site.register(MyModel)

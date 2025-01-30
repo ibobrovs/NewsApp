@@ -17,7 +17,14 @@ from django.views.decorators.cache import cache_page
 from django.core.cache import cache
 from django.views import View
 from django.http import HttpResponse
+from django.http.response import HttpResponse
 from django.utils.translation import gettext as _
+from .models import Category, MyModel
+from django.utils import timezone
+from django.shortcuts import redirect
+from datetime import datetime
+from datetime import datetime
+import pytz
 
 
 class PostDetail(DetailView):
@@ -140,9 +147,21 @@ def subscriptions(request):
 
 class Index(View):
     def get(self, request):
-        string = _('Hello world')
+        # .  Translators: This message appears on the home page only
+        models = MyModel.objects.all()
 
-        return HttpResponse(string)
+        context = {
+            'models': models,
+            'current_time': timezone.localtime(timezone.now()),
+            'timezones': pytz.common_timezones  # добавляем в контекст все доступные часовые пояса
+        }
+
+        return HttpResponse(render(request, 'index.html', context))
+
+    #  по пост-запросу будем добавлять в сессию часовой пояс, который и будет обрабатываться написанным нами ранее middleware
+    def post(self, request):
+        request.session['django_timezone'] = request.POST['timezone']
+        return redirect('/')
 
 @cache_page(60 * 15)
 def my_view(request):
