@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
-from .models import Post
+from .models import Post, Subscription, Category, MyModel
 from .filters import PostFilter
 from .forms import PostForm
 
@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-from .models import Subscription, Category
 
 from django.views.decorators.cache import cache_page
 from django.core.cache import cache
@@ -19,12 +18,12 @@ from django.views import View
 from django.http import HttpResponse
 from django.http.response import HttpResponse
 from django.utils.translation import gettext as _
-from .models import Category, MyModel
 from django.utils import timezone
-from django.shortcuts import redirect
-from datetime import datetime
+from django.shortcuts import redirect, render
 from datetime import datetime
 import pytz
+from rest_framework import viewsets, permissions
+from .serializers import PostSerializer
 
 
 class PostDetail(DetailView):
@@ -162,6 +161,15 @@ class Index(View):
     def post(self, request):
         request.session['django_timezone'] = request.POST['timezone']
         return redirect('/')
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:  # GET, HEAD, OPTIONS
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
 
 @cache_page(60 * 15)
 def my_view(request):
